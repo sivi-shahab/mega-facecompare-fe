@@ -22,6 +22,7 @@ import {BreadcrumbsFacade} from './breadcrumbs.facade';
 import {MatCardModule} from '@angular/material';
 import {TruncateModule} from '../../ui/truncate-pipe/truncate.module';
 import {MatTooltipModule} from '@angular/material/tooltip';
+import {TranslateModule} from '@ngx-translate/core';
 
 @NgModule({
   declarations: [BreadcrumbsComponent],
@@ -33,7 +34,8 @@ import {MatTooltipModule} from '@angular/material/tooltip';
     RouterModule,
     MatCardModule,
     TruncateModule,
-    MatTooltipModule
+    MatTooltipModule,
+    TranslateModule
   ],
   providers: [BreadcrumbsFacade],
 })
