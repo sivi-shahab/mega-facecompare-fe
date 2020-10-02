@@ -16,22 +16,19 @@
 
 import { Injectable } from '@angular/core';
 import { Actions, Effect, ofType } from '@ngrx/effects';
-import { forkJoin, of } from 'rxjs';
+import { of } from 'rxjs';
 import { catchError, map, switchMap, tap } from 'rxjs/operators';
-import { DragNDropService } from 'src/app/features/drag-n-drop/drag-n-drop.service';
 
-import {
-    recognizeFace,
-    recognizeFaceSuccess,
-    recognizeFaceFail
-  } from './actions';
+import { recognizeFace, recognizeFaceSuccess, recognizeFaceFail,
+  addFaceFail, addFace, addFaceSuccess } from './actions';
 import { SnackBarService } from 'src/app/features/snackbar/snackbar.service';
+import { FaceRecognitionService } from '../../core/face-recognition/face-recognition.service';
 
 @Injectable()
-export class TestEffects {
+export class TestModelEffects {
   constructor(
     private actions: Actions,
-    private testService: DragNDropService,
+    private testService: FaceRecognitionService,
     private snackBarService: SnackBarService
   ) { }
 
@@ -44,14 +41,21 @@ export class TestEffects {
     )),
   );
 
+  @Effect()
+  addFace$ = this.actions.pipe(
+    ofType(addFace),
+    switchMap(action => this.testService.addFace(action.file, action.model).pipe(
+      map(model => addFaceSuccess({ model })),
+      catchError(error => of(addFaceFail({ error }))),
+    )),
+  );
+
   @Effect({ dispatch: false })
   showError$ = this.actions.pipe(
-    ofType(
-      recognizeFaceFail
-    ),
+    ofType(recognizeFaceFail),
+    ofType(addFaceFail),
     tap(action => {
       this.snackBarService.openHttpError(action.error);
     })
   );
-
 }

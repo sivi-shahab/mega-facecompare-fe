@@ -16,7 +16,6 @@
 
 import { createEntityAdapter, EntityState } from '@ngrx/entity';
 import { Action, ActionReducer, createReducer, on } from '@ngrx/store';
-import { AppUser } from 'src/app/data/appUser';
 
 import {
     recognizeFace,
@@ -26,12 +25,14 @@ import {
 
 export interface TestEntityState extends EntityState<string> {
   isPending: boolean;
+  model: any;
 }
 
 export const testAdapter = createEntityAdapter<string>();
 
 const initialState: TestEntityState = testAdapter.getInitialState({
-  isPending: false
+  isPending: false,
+  model: null
 });
 
 const reducer: ActionReducer<TestEntityState> = createReducer(
@@ -41,6 +42,6 @@ const reducer: ActionReducer<TestEntityState> = createReducer(
   on(recognizeFaceFail, (state) => ({...state, isPending: false})),
 );
 
-export function testReducer(testState: TestEntityState, action: Action) {
+export function TestModelReducer(testState: TestEntityState, action: Action) {
   return reducer(testState, action);
 }
