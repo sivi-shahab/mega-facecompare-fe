@@ -23,16 +23,12 @@ export class AuthInit {
   constructor(private store: Store<AppState>, private auth: AuthService) {}
 
   public init(): void {
-    const token: string = this.auth.getToken();
-    const firstName: string = localStorage.getItem('firstName');
+    const isAuthenticated: boolean = this.auth.checkAuthorization();
 
-    if (token) {
-      if (this.auth.isTokenValid(token)) {
-        this.store.dispatch(updateUserInfo({
-          isAuthenticated: true,
-          firstName
-        }));
-      }
+    if (isAuthenticated) {
+      this.store.dispatch(updateUserInfo({
+        isAuthenticated: true
+      }));
     }
   }
 }
