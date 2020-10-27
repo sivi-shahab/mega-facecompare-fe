@@ -16,6 +16,10 @@
 
 import { Component, OnInit } from '@angular/core';
 import { DemoPageService } from './demo-page.service';
+import { Store } from '@ngrx/store';
+import { loadDemoApiKeyAction } from '../../store/demo/actions';
+import { selectDemoApiKey } from '../../store/demo/selectors';
+import { tap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-demo-page',
@@ -23,11 +27,9 @@ import { DemoPageService } from './demo-page.service';
   styleUrls: ['./demo-page.component.scss']
 })
 export class DemoPageComponent implements OnInit {
-
-  constructor(private demoService: DemoPageService) { }
+  constructor(private store: Store<any>) { }
 
   ngOnInit(): void {
-    this.demoService.getDemoPageStatus().subscribe();
+    this.store.dispatch(loadDemoApiKeyAction());
   }
-
 }
