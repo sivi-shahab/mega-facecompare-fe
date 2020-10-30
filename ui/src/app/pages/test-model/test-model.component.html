@@ -27,7 +27,8 @@
 
     <!-- todo add container component -->
     <ng-template #elseBlock>
-      <app-face-recognition></app-face-recognition>
+      <app-face-recognition-container [title]="('test_model.title' | translate)">
+      </app-face-recognition-container>
     </ng-template>
 
   </div>
