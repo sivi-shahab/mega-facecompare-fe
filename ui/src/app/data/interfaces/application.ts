@@ -14,12 +14,14 @@
  * permissions and limitations under the License.
  */
 
-export interface AppUser {
+export interface Application {
   id: string;
-  userId: string;
-  firstName: string;
-  lastName: string;
+  name: string;
+  owner: {
+    userId: string;
+    firstName: string;
+    lastName: string;
+  };
   role: string;
-  email?: string;
-  ownerOfApplications?: string[];
+  apiKey?: string;
 }

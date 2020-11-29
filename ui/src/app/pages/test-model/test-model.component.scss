@@ -1,4 +1,4 @@
-/*
+/*!
  * Copyright (c) 2020 the original author or authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,26 +14,19 @@
  * permissions and limitations under the License.
  */
 
-export interface Model {
-  id: string;
-  name: string;
-  accessLevel: string;
-  relations: {
-    id: string;
-    shareMode: string;
-  }[];
-  owner: {
-    id: string;
-    firstName: string;
-    lastName: string;
-  };
-  role: string;
-  apiKey?: string;
-}
+@import 'media.scss';
+@import 'colors.scss';
 
-export interface ModelUpdate {
-  name: string;
-  applicationId: string;
-  organizationId: string;
-  modelId: string;
+.container {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+
+  .header-container {
+    width: 100%;
+
+    @include mobile {
+      height: auto;
+    }
+  }
 }

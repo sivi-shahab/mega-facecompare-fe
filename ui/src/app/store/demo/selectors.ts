@@ -14,25 +14,10 @@
  * permissions and limitations under the License.
  */
 
-import {Store} from '@ngrx/store';
-import {AppState} from 'src/app/store';
-import {AuthService} from './auth.service';
-import {updateUserInfo} from '../../store/userInfo/action';
+import {createFeatureSelector, createSelector} from '@ngrx/store';
+import {DemoEntityState} from './reducers';
 
-export class AuthInit {
-  constructor(private store: Store<AppState>, private auth: AuthService) {}
-
-  public init(): void {
-    const token: string = this.auth.getToken();
-    const firstName: string = localStorage.getItem('firstName');
-
-    if (token) {
-      if (this.auth.isTokenValid(token)) {
-        this.store.dispatch(updateUserInfo({
-          isAuthenticated: true,
-          firstName
-        }));
-      }
-    }
-  }
-}
+export const selectDemoState = createFeatureSelector<DemoEntityState>('demo');
+export const selectDemoApiKey = createSelector(selectDemoState, (state) => state.apiKey);
+export const selectDemoPending = createSelector(selectDemoState, (state) => state.isPending);
+export const selectDemoPageAvailability = createSelector(selectDemoState, (state) => !!state.apiKey);
