@@ -25,11 +25,23 @@ import { TranslateModule } from '@ngx-translate/core';
 import { ToolBarComponent } from './tool-bar.component';
 import { ToolBarContainerComponent } from './tool-bar.container.component';
 import { ToolBarFacade } from './tool-bar.facade';
+import { ChangePasswordDialogComponent } from '../change-password-dialog/change-password-dialog.component';
+import { ChangePasswordDialogModule } from '../change-password-dialog/change-password-dialog.module';
 
 @NgModule({
   declarations: [ToolBarContainerComponent, ToolBarComponent],
   exports: [ToolBarContainerComponent, ToolBarComponent],
-  imports: [CommonModule, MatToolbarModule, MatButtonModule, MatMenuModule, MatIconModule, RouterModule, TranslateModule],
+  imports: [
+    CommonModule,
+    MatToolbarModule,
+    MatButtonModule,
+    MatMenuModule,
+    MatIconModule,
+    RouterModule,
+    TranslateModule,
+    ChangePasswordDialogModule
+  ],
   providers: [ToolBarFacade],
+  entryComponents: [ChangePasswordDialogComponent]
 })
 export class ToolBarModule {}
