@@ -24,7 +24,7 @@
 
 <div class="face-result">
   <app-recognition-result
-    *ngIf="isLoaded$ | async"
+    [isLoaded]="isLoaded$ | async"
     [file]="file$ | async"
     [requestInfo]="requestInfo$ | async"
     [printData]="data$ | async"
