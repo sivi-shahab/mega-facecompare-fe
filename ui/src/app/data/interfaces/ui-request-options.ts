@@ -18,9 +18,3 @@ export interface UIRequestOptions {
   apiKey: string;
   file: File;
 }
-
-export interface UIDoubleFileRequestOptions {
-  apiKey: string;
-  processFile: File;
-  checkFile: File;
-}
