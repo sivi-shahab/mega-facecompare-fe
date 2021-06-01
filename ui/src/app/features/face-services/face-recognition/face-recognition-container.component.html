@@ -13,7 +13,6 @@
   ~ or implied. See the License for the specific language governing
   ~ permissions and limitations under the License.
   -->
-
 <app-recognition-result
   [isLoaded]="isLoaded$ | async"
   [file]="file$ | async"
@@ -21,9 +20,6 @@
   [printData]="data$ | async"
   [type]="type"
   (selectFile)="recognizeFace($event)"
+  (resetFace)="resetFace()"
 >
 </app-recognition-result>
-
-<div class="recognition-loading" *ngIf="pending$ | async">
-  <app-spinner></app-spinner>
-</div>
