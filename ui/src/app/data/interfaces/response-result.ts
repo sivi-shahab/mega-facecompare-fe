@@ -13,44 +13,10 @@
  * or implied. See the License for the specific language governing
  * permissions and limitations under the License.
  */
+import { SourceImageFace } from './source-image-face';
+import { FaceMatches } from './face-matches';
 
 /* eslint-disable @typescript-eslint/naming-convention */
-export interface BoxSize {
-  probability: number;
-  x_max: number;
-  x_min: number;
-  y_max: number;
-  y_min: number;
-}
-
-export interface BoxSubjects {
-  subject: string;
-  similarity: number;
-}
-
-export interface RequestResultRecognition {
-  age: number[];
-  gender: 'male' | 'female';
-  box: BoxSize;
-  subjects: BoxSubjects[];
-  landmarks: [number[]];
-}
-
-export interface SourceImageFace {
-  age: number[];
-  gender: 'male' | 'female';
-  box: BoxSize;
-  landmarks: [number[]];
-}
-
-export interface FaceMatches {
-  age: number[];
-  gender: 'male' | 'female';
-  box: BoxSize;
-  similarity: number;
-  landmarks: [number[]];
-}
-
 export interface RequestResultVerification {
   source_image_face: SourceImageFace;
   face_matches: FaceMatches[];
