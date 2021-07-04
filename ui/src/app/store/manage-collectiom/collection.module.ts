@@ -19,9 +19,10 @@ import { ModelEffects } from '../model/effects';
 import { StoreModule } from '@ngrx/store';
 
 import { collectionReducer } from './reducers';
+import { CollectionEffects } from './effects';
 
 @NgModule({
   declarations: [],
-  imports: [EffectsModule.forFeature([ModelEffects]), StoreModule.forFeature('collection', collectionReducer)],
+  imports: [EffectsModule.forFeature([CollectionEffects]), StoreModule.forFeature('manage-collection', collectionReducer)],
 })
 export class CollectionStoreModule {}
