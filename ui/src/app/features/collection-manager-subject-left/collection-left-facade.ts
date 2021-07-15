@@ -15,22 +15,24 @@
  */
 import { Injectable } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { filter, finalize, map, take, tap } from 'rxjs/operators';
+import { filter, map, take, tap } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 
-import { addSubject, loadSubjects } from '../../store/manage-collectiom/action';
+import { addSubject, setSelectedSubject } from '../../store/manage-collectiom/action';
 import { selectCurrentModel } from '../../store/model/selectors';
-import { selectAddSubjectPending, selectCollectionSubjects } from '../../store/manage-collectiom/selectors';
+import { selectAddSubjectPending, selectCollectionSubject, selectCollectionSubjects } from '../../store/manage-collectiom/selectors';
 
 @Injectable()
 export class CollectionLeftFacade {
   subjectsList$: Observable<string[]>;
+  currentSubject$: Observable<string>;
   isPending$: Observable<boolean>;
 
   private apiKey: string;
 
   constructor(private store: Store<any>) {
     this.subjectsList$ = this.store.select(selectCollectionSubjects);
+    this.currentSubject$ = this.store.select(selectCollectionSubject);
     this.isPending$ = this.store.select(selectAddSubjectPending);
   }
 
@@ -46,9 +48,11 @@ export class CollectionLeftFacade {
       .subscribe();
   }
 
-  loadSubjects(): void {}
-
   addSubject(name: string): void {
     this.store.dispatch(addSubject({ name, apiKey: this.apiKey }));
+  }
+
+  onSelectedSubject(subject: string): void {
+    this.store.dispatch(setSelectedSubject({ subject }));
   }
 }
