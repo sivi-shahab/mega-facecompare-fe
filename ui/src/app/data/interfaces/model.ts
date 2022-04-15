@@ -40,4 +40,5 @@ export interface ModelUpdate {
   applicationId: string;
   modelId: string;
   type: string;
+  isFirstService: boolean
 }
