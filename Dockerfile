@@ -31,9 +31,9 @@ RUN npm run build:prod
 FROM imageregistry.bankmegadev.com:5000/nginxinc/nginx-unprivileged:1.21.1 AS base
 
 # Default non-rahasia; override lewat env / ConfigMap.
-ENV ADMIN_UPSTREAM=compreface-admin:8080 
-ENV API_UPSTREAM=compreface-api:8080 
-ENV CORE_UPSTREAM=compreface-core:3000 
+ENV ADMIN_UPSTREAM=compreface-admin-service:8080 
+ENV API_UPSTREAM=compreface-api-service:8080 
+ENV CORE_UPSTREAM=compreface-core-service:3000 
 ENV NGINX_RESOLVER="" 
 ENV NGINX_RESOLVER_VALID=10s 
 ENV NGINX_UPSTREAM_AUTO_FQDN=true 
