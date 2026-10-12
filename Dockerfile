@@ -55,16 +55,16 @@ LABEL org.opencontainers.image.vendor="mega (repackaged from Exadel CompreFace)"
 RUN rm -f /etc/nginx/conf.d/default.conf
 
 # Copy nginx configuration
-COPY --chown=appuser:appuser ui/nginx/mime.types /etc/nginx/mime.types
-COPY --chown=appuser:appuser docker/nginx.conf /etc/nginx/nginx.conf
-COPY --chown=appuser:appuser docker/nginx.conf.template /etc/nginx/templates/nginx.conf.template
+COPY --chown=nginx:nginx ui/nginx/mime.types /etc/nginx/mime.types
+COPY --chown=nginx:nginx docker/nginx.conf /etc/nginx/nginx.conf
+COPY --chown=nginx:nginx docker/nginx.conf.template /etc/nginx/templates/nginx.conf.template
 
 # Copy build result
-COPY --chown=appuser:appuser --chmod=0755 docker/docker-entrypoint-fe.sh /usr/local/bin/docker-entrypoint-fe.sh
-COPY --chown=appuser:appuser --from=builder /usr/src/app/dist/compreface /usr/share/nginx/html
+COPY --chown=nginx:nginx --chmod=0755 docker/docker-entrypoint-fe.sh /usr/local/bin/docker-entrypoint-fe.sh
+COPY --chown=nginx:nginx --from=builder /usr/src/app/dist/compreface /usr/share/nginx/html
 COPY LICENSE NOTICE /usr/share/licenses/compreface/
 
-RUN chown -R appuser:appuser /etc/nginx/conf.d && chmod -R g+w /etc/nginx/conf.d
+RUN chown -R nginx:nginx /etc/nginx/conf.d && chmod -R g+w /etc/nginx/conf.d
 
 # Cleanup Proxy
 ENV http_proxy=
@@ -75,7 +75,7 @@ ENV HTTPS_PROXY=
 ENV NO_PROXY=localhost,127.0.0.1,.bankmega.com
 
 # Define user
-USER appuser
+USER nginx
 
 EXPOSE 8080
 
