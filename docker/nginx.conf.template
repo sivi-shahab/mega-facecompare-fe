@@ -25,6 +25,13 @@ server {
 
     client_max_body_size ${CLIENT_MAX_BODY_SIZE};
 
+    # Security headers (audit hardening): no framing of the admin UI, no MIME sniffing.
+    # NB: locations that define their own add_header must repeat these (nginx does not merge them).
+    add_header X-Frame-Options "DENY" always;
+    add_header Content-Security-Policy "frame-ancestors 'none'" always;
+    add_header X-Content-Type-Options "nosniff" always;
+    add_header Referrer-Policy "no-referrer" always;
+
     location = /healthz {
         access_log off;
         default_type text/plain;
@@ -45,6 +52,10 @@ server {
     location = /index.html {
         root /usr/share/nginx/html/;
         add_header Cache-Control "no-cache, no-store, must-revalidate" always;
+        add_header X-Frame-Options "DENY" always;
+        add_header Content-Security-Policy "frame-ancestors 'none'" always;
+        add_header X-Content-Type-Options "nosniff" always;
+        add_header Referrer-Policy "no-referrer" always;
         expires off;
     }
 
@@ -54,6 +65,13 @@ server {
         proxy_set_header X-Forwarded-Proto $scheme;
         # Tanpa URI di proxy_pass → request URI (/admin/...) diteruskan apa adanya.
         proxy_pass http://$admin_upstream;
+    }
+
+    # Security fix (audit NV-02): /api/v1/migrate is an unauthenticated, operator-only maintenance action that
+    # rewrites the embeddings of ALL tenants. It must not be reachable from the edge; run it from inside the
+    # cluster (e.g. kubectl port-forward to the api Service) when a calculator migration is really needed.
+    location = /api/v1/migrate {
+        return 403;
     }
 
     location /api/v1/ {
