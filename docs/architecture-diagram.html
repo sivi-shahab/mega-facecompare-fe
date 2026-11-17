@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Arsitektur Mega-FaceCompare</title>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500;600&family=Noto+Serif:ital@0;1&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --color-paper:   #f5f5f5;
+      --color-ink:     #2d3142;
+      --color-muted:   #4f5d75;
+      --color-accent:  #bf4520;
+      --font-sans:     'Geist', system-ui, sans-serif;
+      --font-serif:    'Instrument Serif', 'Noto Serif', serif;
+      --font-mono:     'Geist Mono', ui-monospace, monospace;
+    }
+    body {
+      font-family: var(--font-sans);
+      background: var(--color-paper);
+      color: var(--color-ink);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 3rem 2rem;
+    }
+    .frame { max-width: 1200px; width: 100%; }
+    .diagram-container { width: 100%; overflow-x: auto; }
+    .eyebrow {
+      font-family: var(--font-mono);
+      font-size: 0.66rem;
+      font-weight: 500;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--color-muted);
+      margin-bottom: 0.5rem;
+    }
+    h1 {
+      font-family: var(--font-serif);
+      font-size: clamp(1.5rem, 2.4vw + 0.75rem, 2rem);
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      line-height: 1.15;
+      color: var(--color-ink);
+      margin-bottom: 1.5rem;
+    }
+    svg { width: 100%; min-width: 1080px; display: block; }
+    @media print {
+      .diagram-container { overflow-x: visible; }
+      svg { min-width: 0; }
+    }
+  </style>
+</head>
+<body>
+  <div class="frame">
+    <p class="eyebrow">Architecture · Mega-FaceCompare</p>
+    <h1>Arsitektur Mega-FaceCompare</h1>
+
+    <div class="diagram-container">
+      <svg viewBox="0 0 1080 500" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="mfc-architecture-title mfc-architecture-desc">
+        <title id="mfc-architecture-title">Arsitektur Mega-FaceCompare</title>
+        <desc id="mfc-architecture-desc">Klien masuk lewat fe nginx, satu-satunya layanan yang diekspos, yang meneruskan ke admin dan api di namespace Kubernetes; api dan admin memanggil core untuk deteksi wajah dan menyimpan data ke PostgreSQL eksternal 10.14.21.67 database biometriks.</desc>
+        <defs>
+          <pattern id="dots" width="22" height="22" patternUnits="userSpaceOnUse">
+            <circle cx="1" cy="1" r="0.9" fill="rgba(45,49,66,0.10)"/>
+          </pattern>
+          <marker id="arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#4f5d75"/></marker>
+          <marker id="arrow-accent" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#bf4520"/></marker>
+          <marker id="arrow-link" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#2e5aa8"/></marker>
+        </defs>
+
+        <rect width="100%" height="100%" fill="#f5f5f5"/>
+        <rect width="100%" height="100%" fill="url(#dots)" opacity="0.55"/>
+
+        <!-- Zone: Kubernetes namespace (drawn before arrows and nodes) -->
+        <rect x="216" y="104" width="624" height="320" rx="8"
+              fill="rgba(45,49,66,0.02)" stroke="rgba(45,49,66,0.10)" stroke-width="0.8"/>
+        <rect x="228" y="108" width="168" height="12" rx="2" fill="#f5f5f5"/>
+        <text x="312" y="117" fill="#5a6580" font-size="7" font-family="'Geist Mono', monospace"
+              text-anchor="middle" letter-spacing="0.14em">NAMESPACE K8S · CLUSTERIP</text>
+
+        <!-- Arrows first (behind boxes) -->
+        <!-- Klien → fe -->
+        <line x1="168" y1="264" x2="240" y2="264" stroke="#2e5aa8" stroke-width="1.2" marker-end="url(#arrow-link)"/>
+        <!-- fe → admin (fe right port y=252, enters admin left at y=168) -->
+        <path d="M 392,252 H 424 Q 432,252 432,244 V 176 Q 432,168 440,168 H 488"
+              fill="none" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#arrow)"/>
+        <!-- fe → api (fe right port y=276, enters api left at y=360) -->
+        <path d="M 392,276 H 424 Q 432,276 432,284 V 352 Q 432,360 440,360 H 488"
+              fill="none" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#arrow)"/>
+        <!-- fe → core (GET /core/status only, dashed) -->
+        <line x1="392" y1="264" x2="680" y2="264" stroke="#4f5d75" stroke-width="1" stroke-dasharray="4,3" marker-end="url(#arrow)"/>
+        <!-- admin → core (admin right port y=180, enters core top) -->
+        <path d="M 640,180 H 716 Q 724,180 724,188 V 232"
+              fill="none" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#arrow)"/>
+        <!-- api → core (api right port y=348, enters core bottom) -->
+        <path d="M 640,348 H 716 Q 724,348 724,340 V 296"
+              fill="none" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#arrow)"/>
+        <!-- admin → PostgreSQL (admin right port y=156, enters DB left at y=252) -->
+        <path d="M 640,156 H 848 Q 856,156 856,164 V 244 Q 856,252 864,252 H 880"
+              fill="none" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#arrow)"/>
+        <!-- api → PostgreSQL (api right port y=372, enters DB left at y=276) -->
+        <path d="M 640,372 H 848 Q 856,372 856,364 V 284 Q 856,276 864,276 H 880"
+              fill="none" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#arrow)"/>
+
+        <!-- Arrow labels (masked, 6px clear of their strokes) -->
+        <rect x="174" y="246" width="60" height="12" rx="2" fill="#f5f5f5"/>
+        <text x="204" y="255" fill="#2e5aa8" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">HTTP(S)</text>
+
+        <rect x="442" y="150" width="44" height="12" rx="2" fill="#f5f5f5"/>
+        <text x="464" y="159" fill="#4f5d75" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">/ADMIN/</text>
+
+        <rect x="441" y="366" width="46" height="12" rx="2" fill="#f5f5f5"/>
+        <text x="464" y="375" fill="#4f5d75" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">/API/V1/</text>
+
+        <rect x="524" y="246" width="72" height="12" rx="2" fill="#f5f5f5"/>
+        <text x="560" y="255" fill="#4f5d75" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">GET /STATUS</text>
+
+        <rect x="732" y="312" width="64" height="12" rx="2" fill="#f5f5f5"/>
+        <text x="764" y="321" fill="#4f5d75" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">/FIND_FACES</text>
+
+        <rect x="760" y="138" width="60" height="12" rx="2" fill="#f5f5f5"/>
+        <text x="790" y="147" fill="#4f5d75" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">JDBC :5432</text>
+
+        <rect x="752" y="378" width="76" height="12" rx="2" fill="#f5f5f5"/>
+        <text x="790" y="387" fill="#4f5d75" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">JDBC · NOTIFY</text>
+
+        <!-- Node: Klien (external) -->
+        <rect x="40" y="232" width="128" height="64" rx="6" fill="#f5f5f5"/>
+        <rect x="40" y="232" width="128" height="64" rx="6" fill="rgba(79,93,117,0.10)" stroke="#5a6580" stroke-width="1"/>
+        <rect x="48" y="240" width="28" height="12" rx="2" fill="transparent" stroke="rgba(90,101,128,0.40)" stroke-width="0.8"/>
+        <text x="62" y="249" fill="#5a6580" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">EXT</text>
+        <text x="104" y="268" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">Klien</text>
+        <text x="104" y="284" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">browser · API client</text>
+
+        <!-- Node: fe (edge) -->
+        <rect x="240" y="232" width="152" height="64" rx="6" fill="#f5f5f5"/>
+        <rect x="240" y="232" width="152" height="64" rx="6" fill="rgba(45,49,66,0.03)" stroke="rgba(45,49,66,0.30)" stroke-width="1"/>
+        <rect x="248" y="240" width="32" height="12" rx="2" fill="transparent" stroke="rgba(45,49,66,0.22)" stroke-width="0.8"/>
+        <text x="264" y="249" fill="#5a6580" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">EDGE</text>
+        <text x="316" y="268" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">fe · nginx</text>
+        <text x="316" y="284" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">Angular SPA :8080</text>
+
+        <!-- Node: admin -->
+        <rect x="488" y="136" width="152" height="64" rx="6" fill="#f5f5f5"/>
+        <rect x="488" y="136" width="152" height="64" rx="6" fill="#ffffff" stroke="#2d3142" stroke-width="1"/>
+        <rect x="496" y="144" width="28" height="12" rx="2" fill="transparent" stroke="rgba(45,49,66,0.40)" stroke-width="0.8"/>
+        <text x="510" y="153" fill="#2d3142" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">SVC</text>
+        <text x="564" y="172" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">admin</text>
+        <text x="564" y="188" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">Spring · OAuth2</text>
+
+        <!-- Node: api -->
+        <rect x="488" y="328" width="152" height="64" rx="6" fill="#f5f5f5"/>
+        <rect x="488" y="328" width="152" height="64" rx="6" fill="#ffffff" stroke="#2d3142" stroke-width="1"/>
+        <rect x="496" y="336" width="28" height="12" rx="2" fill="transparent" stroke="rgba(45,49,66,0.40)" stroke-width="0.8"/>
+        <text x="510" y="345" fill="#2d3142" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">SVC</text>
+        <text x="564" y="364" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">api</text>
+        <text x="564" y="380" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">Spring · x-api-key</text>
+
+        <!-- Node: core -->
+        <rect x="680" y="232" width="128" height="64" rx="6" fill="#f5f5f5"/>
+        <rect x="680" y="232" width="128" height="64" rx="6" fill="#ffffff" stroke="#2d3142" stroke-width="1"/>
+        <rect x="688" y="240" width="24" height="12" rx="2" fill="transparent" stroke="rgba(45,49,66,0.40)" stroke-width="0.8"/>
+        <text x="700" y="249" fill="#2d3142" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">ML</text>
+        <text x="744" y="268" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">core</text>
+        <text x="744" y="284" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">Flask · uWSGI :3000</text>
+
+        <!-- Node: PostgreSQL (focal, outside the cluster) -->
+        <rect x="880" y="232" width="160" height="64" rx="6" fill="#f5f5f5"/>
+        <rect x="880" y="232" width="160" height="64" rx="6" fill="rgba(191,69,32,0.08)" stroke="#bf4520" stroke-width="1"/>
+        <rect x="888" y="240" width="24" height="12" rx="2" fill="transparent" stroke="rgba(191,69,32,0.50)" stroke-width="0.8"/>
+        <text x="900" y="249" fill="#bf4520" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">DB</text>
+        <text x="960" y="268" fill="#2d3142" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">PostgreSQL</text>
+        <text x="960" y="284" fill="#4f5d75" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">10.14.21.67 · biometriks</text>
+
+        <!-- Editorial callouts -->
+        <text x="244" y="332" fill="#4f5d75" font-size="13" font-style="italic" font-family="'Instrument Serif', serif">Satu-satunya pintu masuk;</text>
+        <text x="244" y="348" fill="#4f5d75" font-size="13" font-style="italic" font-family="'Instrument Serif', serif">service lain hanya ClusterIP.</text>
+
+        <text x="884" y="332" fill="#4f5d75" font-size="13" font-style="italic" font-family="'Instrument Serif', serif">Di luar cluster; JDBC belum</text>
+        <text x="884" y="348" fill="#4f5d75" font-size="13" font-style="italic" font-family="'Instrument Serif', serif">mewajibkan TLS (NV-10).</text>
+
+        <!-- Legend strip -->
+        <line x1="40" y1="448" x2="1040" y2="448" stroke="rgba(45,49,66,0.10)" stroke-width="0.8"/>
+        <text x="40" y="464" fill="#4f5d75" font-size="8" font-family="'Geist Mono', monospace" letter-spacing="0.18em">LEGENDA</text>
+
+        <rect x="40" y="476" width="14" height="10" rx="2" fill="rgba(191,69,32,0.08)" stroke="#bf4520" stroke-width="1"/>
+        <text x="60" y="484" fill="#4f5d75" font-size="8.5" font-family="'Geist', sans-serif">Data store (fokus)</text>
+
+        <rect x="172" y="476" width="14" height="10" rx="2" fill="#ffffff" stroke="#2d3142" stroke-width="1"/>
+        <text x="192" y="484" fill="#4f5d75" font-size="8.5" font-family="'Geist', sans-serif">Service</text>
+
+        <rect x="256" y="476" width="14" height="10" rx="2" fill="rgba(45,49,66,0.03)" stroke="rgba(45,49,66,0.30)" stroke-width="1"/>
+        <text x="276" y="484" fill="#4f5d75" font-size="8.5" font-family="'Geist', sans-serif">Edge / proxy</text>
+
+        <rect x="368" y="476" width="14" height="10" rx="2" fill="rgba(79,93,117,0.10)" stroke="#5a6580" stroke-width="1"/>
+        <text x="388" y="484" fill="#4f5d75" font-size="8.5" font-family="'Geist', sans-serif">Eksternal</text>
+
+        <rect x="464" y="476" width="14" height="10" rx="2" fill="rgba(45,49,66,0.02)" stroke="rgba(45,49,66,0.10)" stroke-width="0.8"/>
+        <text x="484" y="484" fill="#4f5d75" font-size="8.5" font-family="'Geist', sans-serif">Namespace k8s</text>
+
+        <line x1="584" y1="482" x2="612" y2="482" stroke="#2e5aa8" stroke-width="1.2" marker-end="url(#arrow-link)"/>
+        <text x="620" y="484" fill="#4f5d75" font-size="8.5" font-family="'Geist', sans-serif">Request publik</text>
+
+        <line x1="720" y1="482" x2="748" y2="482" stroke="#4f5d75" stroke-width="1.2" marker-end="url(#arrow)"/>
+        <text x="756" y="484" fill="#4f5d75" font-size="8.5" font-family="'Geist', sans-serif">Panggilan internal</text>
+
+        <line x1="868" y1="482" x2="896" y2="482" stroke="#4f5d75" stroke-width="1" stroke-dasharray="4,3" marker-end="url(#arrow)"/>
+        <text x="904" y="484" fill="#4f5d75" font-size="8.5" font-family="'Geist', sans-serif">Hanya cek status</text>
+      </svg>
+    </div>
+  </div>
+</body>
+</html>
